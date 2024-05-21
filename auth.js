@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "BelajarNodeJSItuMenyengankan";
-auth = (req, res, next) => {
-  let header = req.headers.authorization;
-  let token = header && header.split(" ")[1];
+const SECRET_KEY = "MOKLETHEBAT";
+
+const auth = (req, res, next) => {
+  let token = req.cookies.token || req.headers.authorization && req.headers.authorization.split(" ")[1]
 
   let jwtHeader = {
     algorithm: "HS256",
@@ -16,7 +16,6 @@ auth = (req, res, next) => {
           message: "Invalid token",
         });
       } else {
-        console.log(user);
         next();
       }
     });

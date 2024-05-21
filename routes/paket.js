@@ -6,6 +6,9 @@ const app = express();
 const model = require("../models/index");
 const paket = model.paket;
 
+const auth = require("../auth")
+app.use(auth)
+
 //endpoint menampilkan semua data paket, method: GET, function: findAll()
 app.get("/", (req, res) => {
   paket
@@ -24,9 +27,9 @@ app.get("/", (req, res) => {
 });
 
 //endpoint untuk menampilkan data paket berdasarkan id
-app.get("/:id_paket", (req, res) => {
+app.get("/:id", (req, res) => {
   paket
-    .findOne({ where: { id_paket: req.params.id_paket } })
+    .findOne({ where: { id_paket: req.params.id } })
     .then((result) => {
       res.json({
         paket: result,
@@ -44,7 +47,7 @@ app.post("/", async (req, res) => {
   let data = {
     image: req.body.image,
     nama_paket: req.body.nama_paket,
-    harga: req.body.harga
+    harga: req.body.harga,
   };
 
   await paket
@@ -52,6 +55,7 @@ app.post("/", async (req, res) => {
     .then((result) => {
       res.json({
         message: "data has been inserted",
+        result: result,
       });
     })
     .catch((error) => {
@@ -63,16 +67,14 @@ app.post("/", async (req, res) => {
 
 //endpoint mengupdate data paket, METHOD: PUT, function:update
 app.put("/:id", (req, res) => {
-  let param = {
-    id_paket: req.params.id,
-  };
+  const id = req.params.id;
   let data = {
     nama_paket: req.body.nama_paket,
     jenis: req.body.jenis,
     harga: req.body.harga,
   };
   paket
-    .update(data, { where: param })
+    .update(data, { where: { id_paket: id } })
     .then((result) => {
       res.json({
         message: "data has been updated",
@@ -87,11 +89,9 @@ app.put("/:id", (req, res) => {
 
 //endpoint menghapus data paket, METHOD: DELETE, function: destroy
 app.delete("/:id", (req, res) => {
-  let param = {
-    id_paket: req.params.id,
-  };
+  const id = req.params.id;
   paket
-    .destroy({ where: param })
+    .destroy({ where: { id_paket: id } })
     .then((result) => {
       res.json({
         message: "data has been deleted",
