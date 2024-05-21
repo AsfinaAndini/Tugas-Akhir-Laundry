@@ -6,6 +6,9 @@ const app = express();
 const model = require("../models/index");
 const paket = model.paket;
 
+const auth = require("../auth")
+app.use(auth)
+
 //endpoint menampilkan semua data paket, method: GET, function: findAll()
 app.get("/", (req, res) => {
   paket
