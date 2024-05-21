@@ -7,14 +7,9 @@ const db = require("../db");
 
 //import model
 const models = require("../models/index");
-const transaksi = require("../models/transaksi");
-const transaksiModel = models.transaksi;
+const transaksi= models.transaksi;
 const detail_transaksi = models.detail_transaksi;
-const paketmodel = require('../models').paket;
-const outlet = models.outlet;
-const member = models.member;
-const user = models.user;
-
+const paket = models.paket;
 
 //import auth
 // const auth = require("../auth")
@@ -25,7 +20,7 @@ app.get("/", async (req, res) => {
   let result = await transaksi.findAll({
     include: [
       {
-        model: models.detail_transaksi,
+        model: detail_transaksi,
         as: "detail_transaksi",
         include: ["paket"],
       },
@@ -47,7 +42,7 @@ app.get("/byTransaksi/:id_transaksi", async (req, res) => {
       "outlet",
       "user",
       {
-        model: models.detail_transaksi,
+        model: detail_transaksi,
         as: "detail_transaksi",
         include: ["paket"],
       },
@@ -77,8 +72,8 @@ app.post("/", async (req, res) => {
     const batas_waktu = `${y2}-${m2}-${d2} ${h}:${i}:${s}`;
 
     // Dapatkan harga jenis laundry
-    const paket = await paketmodel.findByPk(req.body.id_paket);
-    const harga = paket.harga;
+    const dataPaket = await paket.findByPk(req.body.id_paket);
+    const harga = dataPaket.harga;
 
     // Hitung total harga
     const total_harga = harga * req.body.qty;
@@ -94,7 +89,7 @@ app.post("/", async (req, res) => {
       status_bayar: "belum",
     };;
     console.log(data);
-    const result = await transaksiModel.create(data);
+    const result = await transaksi.create(data);
 
     res.json({
       message: "Data has been inserted"
